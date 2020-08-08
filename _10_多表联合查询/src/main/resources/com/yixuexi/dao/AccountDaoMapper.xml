@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yixuexi.dao.AccountDao">
+    <!--定义一个能封装account和user的resultMap-->
+    <resultMap id="accountUserMap" type="Account">
+        <!--定义主键字段-->
+        <id property="id" column="id"></id>
+        <!--定义非主键字段-->
+        <result property="uid" column="uid"></result>
+        <result property="money" column="money"></result>
+        <!--一对一的关系映射：配置user的内容-->
+        <!--property：该实体类中的哪个对应关系的主表属性-->
+        <!--column：通过哪一个 字段进行获取的-->
+        <!--javaType：最后的结果封装到哪个类  正常写法是com.xxx.xx 用了TypeA..所以直接类名-->
+        <association property="user" column="uid" javaType="User">
+            <!--在里面写User的属性和数据库对应起来-->
+            <id property="id" column="id"></id>
+            <result property="name" column="name"></result>
+            <result property="password" column="password"></result>
+        </association>
+    </resultMap>
+
+
+    <select id="findAll" resultMap="accountUserMap">
+        select
+            a.*,u.id,u.name,u.password
+        from
+            account a
+        join
+            user u
+        on
+            a.uid = u.id
+    </select>
+    <select id="findAllAccountUser" resultType="AccountUser">
+        select
+            a.* , u.name ,u.password
+        from
+            account a
+        join
+            user u
+        on
+            a.uid = u.id
+    </select>
+</mapper>

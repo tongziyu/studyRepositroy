@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yixuexi.dao.UserDao">
+    <!--定义User的resultMap 一对多查询-->
+    <!--id 随便起一个名字 type：类型仍然是一个User 配置了别名所以直接写类名-->
+    <resultMap id="UserAccountMap" type="User">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="password" column="password"></result>
+        <!--配置user对象中accounts集合的映射-->
+        <!--property：User对象的Account属性名-->
+        <!--ofType：集合中元素的类型(用了别名 不然要写权限定类名)-->
+        <collection property="accounts" ofType="Account">
+            <id property="id" column="aid"></id>
+            <result property="uid" column="uid"></result>
+            <result property="money" column="money"></result>
+        </collection>
+
+    </resultMap>
+    <select id="findAll" resultMap="UserAccountMap">
+        select
+            u.*,a.id as aid ,a.uid,a.money
+        from
+            user u
+        left join
+            account a
+        on
+            u.id = a.uid
+    </select>
+</mapper>
